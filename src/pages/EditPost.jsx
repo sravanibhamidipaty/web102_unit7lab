@@ -1,11 +1,29 @@
-import {useState} from 'react'
+import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { supabase } from '../client'
 import './EditPost.css'
 
-const EditPost = ({data}) => {
+const EditPost = () => {
 
     const {id} = useParams()
-    const [post, setPost] = useState({id: null, title: "", author: "", description: ""})
+    const [post, setPost] = useState({title: "", author: "", description: ""})
+
+    useEffect(() => {
+        // READ the single post being edited so the form is pre-filled
+        const fetchPost = async () => {
+            const {data} = await supabase
+                .from('Posts')
+                .select()
+                .eq('id', id)
+                .single()
+
+            if (data) {
+                setPost(data)
+            }
+        }
+
+        fetchPost()
+    }, [id])
 
     const handleChange = (event) => {
         const {name, value} = event.target
@@ -15,6 +33,30 @@ const EditPost = ({data}) => {
                 [name]:value,
             }
         })
+    }
+
+    // UPDATE the matching post in the database
+    const updatePost = async (event) => {
+        event.preventDefault();
+
+        await supabase
+            .from('Posts')
+            .update({ title: post.title, author: post.author, description: post.description})
+            .eq('id', id);
+
+        window.location = "/";
+    }
+
+    // DELETE the matching post from the database
+    const deletePost = async (event) => {
+        event.preventDefault();
+
+        await supabase
+            .from('Posts')
+            .delete()
+            .eq('id', id);
+
+        window.location = "/";
     }
 
     return (
@@ -32,8 +74,8 @@ const EditPost = ({data}) => {
                 <textarea rows="5" cols="50" id="description" name="description" value={post.description} onChange={handleChange} >
                 </textarea>
                 <br/>
-                <input type="submit" value="Submit" />
-                <button className="deleteButton">Delete</button>
+                <input type="submit" value="Submit" onClick={updatePost}/>
+                <button className="deleteButton" onClick={deletePost}>Delete</button>
             </form>
         </div>
     )
