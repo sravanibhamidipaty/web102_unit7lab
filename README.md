@@ -33,8 +33,7 @@ The delete button on the edit form removes the post from the database and the ho
 ### Demo
 A full run: creating, reading, editing, betting on, and deleting challenges, all backed by the live database.
 
-<!-- Upload demo.mov on github.com and paste ONLY the generated user-attachments link on the blank line below (no other text) -->
-
+https://github.com/user-attachments/assets/0c2de215-6593-4cd7-8c1e-f709938ab308
 
 ## What I practiced
 - Standing up a Postgres database with Supabase and defining a table schema
